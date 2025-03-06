@@ -3,6 +3,10 @@ import 'package:intl/intl.dart';
 
 class Tarefa{
 
+  static const CAMPO_ID = '_id';
+  static const CAMPO_DESCRICAO = 'descricao';
+  static const CAMPO_PRAZO = 'prazo';
+
   int id;
   String descricao;
   DateTime? prazo;
