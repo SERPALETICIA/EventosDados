@@ -12,7 +12,9 @@ class ListaTarefasPage extends StatefulWidget{
 class _ListaTarefasPageState extends State<ListaTarefasPage>{
 
   final tarefas = <Tarefa> [
-   // Tarefa(id: 1, descricao: 'Tarefa avaliativa da disciplina')
+   Tarefa(id: 1, descricao: 'Tarefa avaliativa da disciplina'
+   //, prazo: DateTime.now().add(const Duration(days: 5))
+  )
   ];
 
   var _ultimoId = 1;
@@ -51,6 +53,19 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
         ),
       );
     }
-    return Container();
+    return  ListView.separated(
+      itemCount: tarefas.length,
+        itemBuilder: (BuildContext context, int index){
+          final tarefa = tarefas[index];
+          return ListTile(
+            title: Text('${tarefa.id} - ${tarefa.descricao}'),
+            subtitle: Text(tarefa.prazoFormatado.isNotEmpty ?
+            'Prazo - ${tarefa.prazoFormatado}' :
+            'Prazo - não cadastrado'),
+          );
+        },
+        separatorBuilder: (BuildContext context, int index) => Divider(),
+
+    );
   }
 }
