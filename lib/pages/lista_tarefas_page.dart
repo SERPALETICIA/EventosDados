@@ -12,13 +12,16 @@ class ListaTarefasPage extends StatefulWidget{
 
 class _ListaTarefasPageState extends State<ListaTarefasPage>{
 
+  static const ACAO_EDITAR = 'editar';
+  static const ACAO_EXCLUIR = 'excluir';
+
   final tarefas = <Tarefa> [
   // Tarefa(id: 1, descricao: 'Tarefa avaliativa da disciplina'
    //, prazo: DateTime.now().add(const Duration(days: 5))
   //)
   ];
 
-  var _ultimoId = 1;
+  var _ultimoId = 0;
 
   @override
   Widget build (BuildContext context){
@@ -59,16 +62,55 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
       itemCount: tarefas.length,
         itemBuilder: (BuildContext context, int index){
           final tarefa = tarefas[index];
-          return ListTile(
-            title: Text('${tarefa.id} - ${tarefa.descricao}'),
-            subtitle: Text(tarefa.prazoFormatado.isNotEmpty ?
-            'Prazo - ${tarefa.prazoFormatado}' :
-            'Prazo - não cadastrado'),
+          return PopupMenuButton<String>(
+              child: ListTile(
+                title: Text('${tarefa.id} - ${tarefa.descricao}'),
+                subtitle: Text(tarefa.prazoFormatado.isNotEmpty ?
+                'Prazo - ${tarefa.prazoFormatado}' :
+                'Prazo - não cadastrado'),
+              ),
+            itemBuilder: (BuildContext context) => criarMenuPopUp(),
+            onSelected: (String valorSelecionado){
+                if (valorSelecionado == ACAO_EDITAR){
+                  _abrirForm(tarefaAtual: tarefa, indice: index);
+                }
+            },
           );
         },
         separatorBuilder: (BuildContext context, int index) => Divider(),
 
     );
+  }
+
+  List<PopupMenuEntry<String>> criarMenuPopUp(){
+    return [
+      const PopupMenuItem<String>(
+        value: ACAO_EDITAR,
+          child: Row(
+            children: [
+              Icon(Icons.edit, color: Colors.black),
+              Padding(
+                  padding: EdgeInsets.only(left: 10),
+                child: Text('Editar'),
+              )
+
+            ],
+          ),
+      ),
+      const PopupMenuItem<String>(
+        value: ACAO_EXCLUIR,
+        child: Row(
+          children: [
+            Icon(Icons.delete, color: Colors.red),
+            Padding(
+              padding: EdgeInsets.only(left: 10),
+              child: Text('Excluir'),
+            )
+
+          ],
+        ),
+      ),
+    ];
   }
 
   void _abrirForm({Tarefa? tarefaAtual, int? indice} ){
