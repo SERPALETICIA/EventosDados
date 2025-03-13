@@ -89,7 +89,7 @@ class ConteudoFormDialogState extends State<ConteudoFormDialog>{
   }
   
   Tarefa get novaTarefa => Tarefa(
-      id: widget.tarefaAtual!.id ?? 0, 
+      id: widget.tarefaAtual?.id ?? 0,
       descricao: descricaoController.text,
     prazo: prazoControler.text.isEmpty ? null : _dateFormat.parse(prazoControler.text)
   );

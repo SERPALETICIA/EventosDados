@@ -13,9 +13,9 @@ class ListaTarefasPage extends StatefulWidget{
 class _ListaTarefasPageState extends State<ListaTarefasPage>{
 
   final tarefas = <Tarefa> [
-   Tarefa(id: 1, descricao: 'Tarefa avaliativa da disciplina'
+  // Tarefa(id: 1, descricao: 'Tarefa avaliativa da disciplina'
    //, prazo: DateTime.now().add(const Duration(days: 5))
-  )
+  //)
   ];
 
   var _ultimoId = 1;
@@ -35,6 +35,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
 
   AppBar _criarAppBar() {
     return AppBar(
+      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       centerTitle: true,
       title: const Text('Gerenciador de Tarefas'),
       actions: [
@@ -71,7 +72,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
   }
 
   void _abrirForm({Tarefa? tarefaAtual, int? indice} ){
-    final key = GlobalKey<_ListaTarefasPageState>();
+    final key = GlobalKey<ConteudoFormDialogState>();
     showDialog(
         context: context,
         builder: (BuildContext context){
@@ -79,6 +80,29 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
               title: Text(tarefaAtual == null ? 'Nova tarefa':
               'Alterar a tarefa ${tarefaAtual.id}'),
             content: ConteudoFormDialog(key: key, tarefaAtual: tarefaAtual),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Cancelar'),
+              ),
+              TextButton(
+              child: const Text('Salvar'),
+                  onPressed: () {
+                    if (key.currentState != null && key.currentState!.dadosValidados()) {
+                      setState(() {
+                        final novaTarefa = key.currentState!.novaTarefa;
+                        if (indice == null){
+                          novaTarefa.id = ++_ultimoId;
+                          tarefas.add(novaTarefa);
+                        }else{
+                          tarefas[indice] = novaTarefa;
+                        }
+                      });
+                    }
+                    Navigator.of(context).pop();
+                  },
+              )
+            ],
           );
         }
     );
