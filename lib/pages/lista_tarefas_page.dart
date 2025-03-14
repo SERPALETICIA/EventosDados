@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:gerenciador_tarefas_si7/model/tarefa.dart';
+import 'package:gerenciador_tarefas_si7/pages/filtro_page.dart';
 import 'package:gerenciador_tarefas_si7/widgets/conteudo_form_dialog.dart';
 
 class ListaTarefasPage extends StatefulWidget{
@@ -43,7 +44,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
       title: const Text('Gerenciador de Tarefas'),
       actions: [
         IconButton(
-            onPressed: () {},
+            onPressed: _abrirFiltro,
             icon: Icon(Icons.filter_list)
         )
       ],
@@ -81,6 +82,16 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
         },
         separatorBuilder: (BuildContext context, int index) => Divider(),
 
+    );
+  }
+
+  void _abrirFiltro() {
+    final navigator = Navigator.of(context);
+    navigator.push(FiltroPage.ROUTE_NAME).then((alterouValore){
+      if (alterouValore == null){
+        /// TODO
+      }
+    }
     );
   }
 
