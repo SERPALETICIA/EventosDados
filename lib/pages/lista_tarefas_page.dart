@@ -73,12 +73,49 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
             onSelected: (String valorSelecionado){
                 if (valorSelecionado == ACAO_EDITAR){
                   _abrirForm(tarefaAtual: tarefa, indice: index);
+                }else{
+                  _excluir(index);
                 }
             },
           );
         },
         separatorBuilder: (BuildContext context, int index) => Divider(),
 
+    );
+  }
+
+  void _excluir (int indice){
+    showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            title: const Row(
+              children: [
+                Icon(Icons.warning, color: Colors.red),
+                Padding(
+                    padding: EdgeInsets.only(left: 10),
+                  child: Text('Atenção'),
+                ),
+              ],
+            ),
+            content: const Text('Deseja realmente excluir esse registro?'),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Não')
+              ),
+              TextButton(
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                    setState(() {
+                      tarefas.removeAt(indice);
+                    });
+                  },
+                  child: const Text('Sim')
+              )
+            ],
+          );
+        }
     );
   }
 
