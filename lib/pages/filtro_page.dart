@@ -28,6 +28,24 @@ class _FiltroPageState extends State<FiltroPage>{
   bool _alterouValores = false;
 
   @override
+  void initState(){
+    super.initState();
+    _carregarSharedPreferences();
+  }
+
+  void _carregarSharedPreferences() async {
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _campoOrdenacao = prefs.getString(FiltroPage.CHAVE_CAMPO_ORDENACAO) ??
+          Tarefa.CAMPO_ID;
+      _usarOrdemDecrescente = prefs.getBool(FiltroPage.CHAVE_ORDENAR_DECRESCENTE) ??
+      false;
+      _descricaoController.text = prefs.getString(FiltroPage.CHAVE_FILTRO_DESCRICAO) ??
+      '';
+    });
+  }
+
+  @override
   Widget build(BuildContext context){
     return WillPopScope(
       onWillPop: _onVoltarClick,
