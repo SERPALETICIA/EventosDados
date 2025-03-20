@@ -3,111 +3,110 @@
 import 'package:flutter/material.dart';
 import 'package:gerenciador_tarefas_si7/model/tarefa.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 class FiltroPage extends StatefulWidget{
+
   static const ROUTE_NAME = '/filtro';
-  static const CHAVE_CAMPO_ORDENACAO = 'campoOrdenacao';
-  static const USAR_ORDEM_DECRESCENTE = 'usarOrdemDecrescente';
-  static const CHAVE_FILTRO_DESCRICAO = 'filtroDescricao';
+  static const  CHAVE_CAMPO_ORDENACAO = 'campoOrdenacao';
+  static const  CHAVE_ORDENAR_DECRESCENTE = 'usarOrdemDecrescente';
+  static const  CHAVE_FILTRO_DESCRICAO = 'filtroDescricao';
 
   @override
   _FiltroPageState createState() => _FiltroPageState();
+
 }
 
+@override
 class _FiltroPageState extends State<FiltroPage>{
-
-  final camposParaOrdenacao = {
-    Tarefa.CAMPO_ID: 'Código', Tarefa.CAMPO_DESCRICAO: 'Descrição',
-    Tarefa.CAMPO_PRAZO: 'Prazo'
+  final camposParaOrdenacao= {
+    Tarefa.CAMPO_ID: 'Código', Tarefa.CAMPO_DESCRICAO: 'Descrição', Tarefa.CAMPO_PRAZO: 'Prazo'
   };
 
   late final SharedPreferences prefs;
-  String campoOrdenacao = Tarefa.CAMPO_ID;
-  bool usarOrdemDecrescente = false;
-  final descricaoController = TextEditingController();
+  final _descricaoController = TextEditingController();
+  String _campoOrdenacao = Tarefa.CAMPO_ID;
+  bool _usarOrdemDecrescente = false;
   bool _alterouValores = false;
 
   @override
   Widget build(BuildContext context){
     return WillPopScope(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text('Filtros'),
-          ),
-          body: _criarBody(),
-        ) ,
-        onWillPop: _onVoltarClick,
+      onWillPop: _onVoltarClick,
+      child: Scaffold(
+        appBar: AppBar(
+            centerTitle: false,
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+            title: const Text('Filtro e Ordenação')
+        ),
+        body: _criaBody(),
+      ),
     );
   }
 
-  Widget _criarBody() {
+  Widget _criaBody(){
     return ListView(
       children: [
         const Padding(
-            padding: EdgeInsets.only(left: 10, top: 10),
-          child: Text('Campos para Ordenação'),
+          padding: EdgeInsets.only(left: 10, top: 10),
+          child: Text('Campos para ordenação'),
         ),
-        for ( final campo in camposParaOrdenacao.keys)
+        for (final campo in camposParaOrdenacao.keys)
           Row(
             children: [
               Radio(
-                  value: campo,
-                  groupValue: campoOrdenacao,
-                  onChanged: _onCheckcampoOrdenacao
+                value: campo,
+                groupValue: _campoOrdenacao,
+                onChanged: _onCampoOrdenacaoChanged,
               ),
-              Text(camposParaOrdenacao[campo] ?? '')
+              Text(camposParaOrdenacao[campo] ?? ''),
             ],
           ),
         const Divider(),
         Row(
           children: [
             Checkbox(
-                value: usarOrdemDecrescente, 
-                onChanged: _onCheckusarOrdemDecrescente
+              value: _usarOrdemDecrescente,
+              onChanged: _onUsarOrdemDecrescenteChange,
             ),
-            const Text('Usar ordem decrescente')
+            const Text('Usar ordem descrescente')
           ],
         ),
         const Divider(),
         Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           child: TextField(
-            decoration: const InputDecoration(labelText: 'A descriçao começa com: '),
-            controller: descricaoController,
-            onChanged: _onCheckDescricao
+            decoration: const InputDecoration(labelText: 'A descriçao começa com:'),
+            controller: _descricaoController,
+            onChanged: _onFiltroDescricaoChange,
           ),
-        )
+        ),
       ],
     );
-  }
-
-  void _onCheckcampoOrdenacao(String? valor){
-    prefs.setString(FiltroPage.CHAVE_CAMPO_ORDENACAO, valor ?? '');
-    _alterouValores = true;
-
-    setState(() {
-      campoOrdenacao = valor ?? '';
-    });
-
-  }
-
-  void _onCheckusarOrdemDecrescente(bool? valor){
-    prefs.setBool(FiltroPage.USAR_ORDEM_DECRESCENTE, valor == true);
-    _alterouValores = true;
-
-    setState(() {
-      usarOrdemDecrescente = valor == true;
-    });
-
-  }
-
-  void _onCheckDescricao(String? valor){
-    prefs.setString(FiltroPage.CHAVE_FILTRO_DESCRICAO, valor ?? '');
-    _alterouValores = true;
   }
 
   Future<bool> _onVoltarClick() async{
     Navigator.of(context).pop(_alterouValores);
     return true;
   }
+
+  void _onFiltroDescricaoChange(String? valor){
+    prefs.setString(FiltroPage.CHAVE_FILTRO_DESCRICAO, valor ?? '');
+    _alterouValores = true;
+  }
+
+  void _onCampoOrdenacaoChanged(String? valor){
+    prefs.setString(FiltroPage.CHAVE_CAMPO_ORDENACAO, valor ?? '');
+    _alterouValores = true;
+    setState(() {
+      _campoOrdenacao = valor ?? '';
+    });
+  }
+
+  void _onUsarOrdemDecrescenteChange(bool? valor){
+    prefs.setBool(FiltroPage.CHAVE_ORDENAR_DECRESCENTE, valor == true);
+    _alterouValores = true;
+    setState(() {
+      _usarOrdemDecrescente = valor == true;
+    });
+  }
+
 }
