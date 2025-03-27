@@ -6,6 +6,7 @@ class Tarefa{
   static const CAMPO_ID = '_id';
   static const CAMPO_DESCRICAO = 'descricao';
   static const CAMPO_PRAZO = 'prazo';
+  static const nomeTabela = 'tarefa';
 
   int id;
   String descricao;
