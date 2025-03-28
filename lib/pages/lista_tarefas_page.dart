@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:gerenciador_tarefas_si7/dao/tarefa_dao.dart';
 import 'package:gerenciador_tarefas_si7/model/tarefa.dart';
 import 'package:gerenciador_tarefas_si7/pages/filtro_page.dart';
 import 'package:gerenciador_tarefas_si7/widgets/conteudo_form_dialog.dart';
@@ -16,13 +17,24 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
   static const ACAO_EDITAR = 'editar';
   static const ACAO_EXCLUIR = 'excluir';
 
-  final tarefas = <Tarefa> [
-  // Tarefa(id: 1, descricao: 'Tarefa avaliativa da disciplina'
-   //, prazo: DateTime.now().add(const Duration(days: 5))
-  //)
-  ];
+  final tarefas = <Tarefa> [];
+  final _dao = TarefaDao();
 
-  var _ultimoId = 0;
+  @override
+  void initState(){
+    super.initState();
+    _atualizarLista();
+  }
+
+  void _atualizarLista() async{
+    final buscarTarefa = await _dao.listar();
+    setState(() {
+      tarefas.clear();
+      if(buscarTarefa.isNotEmpty){
+        tarefas.addAll(buscarTarefa);
+      }
+    });
+  }
 
   @override
   Widget build (BuildContext context){
@@ -73,7 +85,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
             itemBuilder: (BuildContext context) => criarMenuPopUp(),
             onSelected: (String valorSelecionado){
                 if (valorSelecionado == ACAO_EDITAR){
-                  _abrirForm(tarefaAtual: tarefa, indice: index);
+                  _abrirForm(tarefaAtual: tarefa);
                 }else{
                   _excluir(index);
                 }
@@ -161,7 +173,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
     ];
   }
 
-  void _abrirForm({Tarefa? tarefaAtual, int? indice} ){
+  void _abrirForm({Tarefa? tarefaAtual}){
     final key = GlobalKey<ConteudoFormDialogState>();
     showDialog(
         context: context,
@@ -179,17 +191,14 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
               child: const Text('Salvar'),
                   onPressed: () {
                     if (key.currentState != null && key.currentState!.dadosValidados()) {
-                      setState(() {
-                        final novaTarefa = key.currentState!.novaTarefa;
-                        if (indice == null){
-                          novaTarefa.id = ++_ultimoId;
-                          tarefas.add(novaTarefa);
-                        }else{
-                          tarefas[indice] = novaTarefa;
+                      Navigator.of(context).pop();
+                      final novaTarefa = key.currentState!.novaTarefa;
+                      _dao.salvar(novaTarefa).then((sucess){
+                        if (sucess){
+                          _atualizarLista();
                         }
                       });
                     }
-                    Navigator.of(context).pop();
                   },
               )
             ],

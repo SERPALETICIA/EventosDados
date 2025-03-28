@@ -8,7 +8,7 @@ class Tarefa{
   static const CAMPO_PRAZO = 'prazo';
   static const nomeTabela = 'tarefa';
 
-  int id;
+  int? id;
   String descricao;
   DateTime? prazo;
 
