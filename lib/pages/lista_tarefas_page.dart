@@ -5,6 +5,7 @@ import 'package:gerenciador_tarefas_si7/dao/tarefa_dao.dart';
 import 'package:gerenciador_tarefas_si7/model/tarefa.dart';
 import 'package:gerenciador_tarefas_si7/pages/filtro_page.dart';
 import 'package:gerenciador_tarefas_si7/widgets/conteudo_form_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ListaTarefasPage extends StatefulWidget{
 
@@ -27,7 +28,16 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
   }
 
   void _atualizarLista() async{
-    final buscarTarefa = await _dao.listar();
+    final prefs = await SharedPreferences.getInstance();
+    final campoOrdenacao = prefs.getString(FiltroPage.CHAVE_CAMPO_ORDENACAO) ?? Tarefa.CAMPO_ID;
+    final usarOrdemDecrescente = prefs.getBool(FiltroPage.CHAVE_ORDENAR_DECRESCENTE) == true;
+    final filtroDescricao = prefs.getString(FiltroPage.CHAVE_FILTRO_DESCRICAO) ?? '';
+
+    final buscarTarefa = await _dao.listar(
+      filtro: filtroDescricao,
+      campoOrdenacao: campoOrdenacao,
+      usarOrdemDecrescente: usarOrdemDecrescente
+    );
     setState(() {
       tarefas.clear();
       if(buscarTarefa.isNotEmpty){
@@ -87,7 +97,7 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
                 if (valorSelecionado == ACAO_EDITAR){
                   _abrirForm(tarefaAtual: tarefa);
                 }else{
-                  _excluir(index);
+                  _excluir(tarefa);
                 }
             },
           );
@@ -101,13 +111,13 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
     final navigator = Navigator.of(context);
     navigator.pushNamed(FiltroPage.ROUTE_NAME).then((alterouValores){
       if (alterouValores == true){
-        /// TODO
+        _atualizarLista();
       }
     }
     );
   }
 
-  void _excluir (int indice){
+  void _excluir (Tarefa tarefa){
     showDialog(
         context: context,
         builder: (BuildContext context){
@@ -130,8 +140,13 @@ class _ListaTarefasPageState extends State<ListaTarefasPage>{
               TextButton(
                   onPressed: (){
                     Navigator.of(context).pop();
-                    setState(() {
-                      tarefas.removeAt(indice);
+                    if (tarefa == null){
+                      return;
+                    }
+                    _dao.remover(tarefa.id!).then((sucess){
+                      if (sucess){
+                        _atualizarLista();
+                      }
                     });
                   },
                   child: const Text('Sim')
