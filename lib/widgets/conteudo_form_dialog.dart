@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import '../model/tarefa.dart';
 
 class ConteudoFormDialog extends StatefulWidget{
-  final Tarefa? tarefaAtual;
+  final Event? tarefaAtual;
 
   ConteudoFormDialog({ Key? key, this.tarefaAtual}) : super(key: key);
 
@@ -49,7 +49,7 @@ class ConteudoFormDialogState extends State<ConteudoFormDialog>{
             ),
             TextFormField(
               controller: prazoControler,
-              decoration: InputDecoration(labelText: 'Prazo',
+              decoration: InputDecoration(labelText: 'Data do Evento',
               prefixIcon: IconButton(
                 icon: Icon(Icons.calendar_today),
                 onPressed: _mostrarCalendario,
@@ -88,7 +88,7 @@ class ConteudoFormDialogState extends State<ConteudoFormDialog>{
     });
   }
   
-  Tarefa get novaTarefa => Tarefa(
+  Event get novoEvent => Event(
       id: widget.tarefaAtual?.id ?? null,
       descricao: descricaoController.text,
     prazo: prazoControler.text.isEmpty ? null : _dateFormat.parse(prazoControler.text)

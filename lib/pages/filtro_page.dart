@@ -18,12 +18,12 @@ class FiltroPage extends StatefulWidget{
 @override
 class _FiltroPageState extends State<FiltroPage>{
   final camposParaOrdenacao= {
-    Tarefa.CAMPO_ID: 'Código', Tarefa.CAMPO_DESCRICAO: 'Descrição', Tarefa.CAMPO_PRAZO: 'Prazo'
+    Event.CAMPO_ID: 'Código', Event.CAMPO_DESCRICAO: 'Descrição', Event.CAMPO_PRAZO: 'Data'
   };
 
   late final SharedPreferences prefs;
   final _descricaoController = TextEditingController();
-  String _campoOrdenacao = Tarefa.CAMPO_ID;
+  String _campoOrdenacao = Event.CAMPO_ID;
   bool _usarOrdemDecrescente = false;
   bool _alterouValores = false;
 
@@ -37,7 +37,7 @@ class _FiltroPageState extends State<FiltroPage>{
     prefs = await SharedPreferences.getInstance();
     setState(() {
       _campoOrdenacao = prefs.getString(FiltroPage.CHAVE_CAMPO_ORDENACAO) ??
-          Tarefa.CAMPO_ID;
+          Event.CAMPO_ID;
       _usarOrdemDecrescente = prefs.getBool(FiltroPage.CHAVE_ORDENAR_DECRESCENTE) ??
       false;
       _descricaoController.text = prefs.getString(FiltroPage.CHAVE_FILTRO_DESCRICAO) ??
@@ -93,6 +93,15 @@ class _FiltroPageState extends State<FiltroPage>{
           padding: const EdgeInsets.symmetric(horizontal: 10),
           child: TextField(
             decoration: const InputDecoration(labelText: 'A descriçao começa com:'),
+            controller: _descricaoController,
+            onChanged: _onFiltroDescricaoChange,
+          ),
+        ),
+        const Divider(),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: TextField(
+            decoration: const InputDecoration(labelText: 'Escolha uma cidade:'),
             controller: _descricaoController,
             onChanged: _onFiltroDescricaoChange,
           ),

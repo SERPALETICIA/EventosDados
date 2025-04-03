@@ -1,18 +1,18 @@
 
 import 'package:intl/intl.dart';
 
-class Tarefa{
+class Event{
 
   static const CAMPO_ID = '_id';
   static const CAMPO_DESCRICAO = 'descricao';
   static const CAMPO_PRAZO = 'prazo';
-  static const nomeTabela = 'tarefa';
+  static const nomeTabela = 'event';
 
   int? id;
   String descricao;
   DateTime? prazo;
 
-  Tarefa({required this.id, required this.descricao, this.prazo});
+  Event({required this.id, required this.descricao, this.prazo});
 
   String get prazoFormatado{
     if (prazo == null){
@@ -28,7 +28,7 @@ class Tarefa{
     DateFormat("dd/MM/yyyy").format(prazo!)
   };
 
-  factory Tarefa.fromMap(Map<String, dynamic> map) => Tarefa(
+  factory Event.fromMap(Map<String, dynamic> map) => Event(
       id: map[CAMPO_ID] is int ? map[CAMPO_ID] : null,
       descricao: map[CAMPO_DESCRICAO] is String ? map[CAMPO_DESCRICAO] : '',
       prazo: map[CAMPO_PRAZO] == null ? null :

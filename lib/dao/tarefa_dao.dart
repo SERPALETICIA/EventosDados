@@ -4,37 +4,37 @@ import 'package:gerenciador_tarefas_si7/database/database_provider.dart';
 
 import '../model/tarefa.dart';
 
-class TarefaDao{
+class EventDao{
   final dbProvider = DatabaseProvider.instance;
 
-  Future<bool> salvar(Tarefa tarefa) async{
+  Future<bool> salvar(Event event) async{
     final db = await dbProvider.database;
-    final valores = tarefa.toMap();
-    if (tarefa.id == null){
-      tarefa.id = await db.insert(Tarefa.nomeTabela, valores);
+    final valores = event.toMap();
+    if (event.id == null){
+      event.id = await db.insert(Event.nomeTabela, valores);
       return true;
     }else{
-      final registrosAtualizados = await db.update(Tarefa.nomeTabela, valores,
-      where: '${Tarefa.CAMPO_ID} = ?', whereArgs: [tarefa.id]);
+      final registrosAtualizados = await db.update(Event.nomeTabela, valores,
+      where: '${Event.CAMPO_ID} = ?', whereArgs: [event.id]);
       return registrosAtualizados > 0;
     }
   }
 
   Future<bool> remover (int id) async{
     final db = await dbProvider.database;
-    final registrosAtualizados = await db.delete(Tarefa.nomeTabela,
-    where:  '${Tarefa.CAMPO_ID} = ?', whereArgs: [id]);
+    final registrosAtualizados = await db.delete(Event.nomeTabela,
+    where:  '${Event.CAMPO_ID} = ?', whereArgs: [id]);
     return registrosAtualizados > 0;
   }
 
-  Future<List<Tarefa>> listar({
+  Future<List<Event>> listar({
     String filtro = '',
-    String campoOrdenacao = Tarefa.CAMPO_ID,
+    String campoOrdenacao = Event.CAMPO_ID,
     bool usarOrdemDecrescente = false,
 }) async{
     String? where;
     if (filtro.isNotEmpty){
-      where = "UPPER(${Tarefa.CAMPO_DESCRICAO}) LIKE '${filtro.toUpperCase()}'";
+      where = "UPPER(${Event.CAMPO_DESCRICAO}) LIKE '${filtro.toUpperCase()}'";
     }
 
     var oderBy = campoOrdenacao;
@@ -43,11 +43,11 @@ class TarefaDao{
     }
 
     final db = await dbProvider.database;
-    final resultado = await db.query(Tarefa.nomeTabela,
-        columns: [Tarefa.CAMPO_ID, Tarefa.CAMPO_DESCRICAO, Tarefa.CAMPO_PRAZO],
+    final resultado = await db.query(Event.nomeTabela,
+        columns: [Event.CAMPO_ID, Event.CAMPO_DESCRICAO, Event.CAMPO_PRAZO],
         where: where,
         orderBy: oderBy,
     );
-    return resultado.map((m) => Tarefa.fromMap(m)).toList();
+    return resultado.map((m) => Event.fromMap(m)).toList();
   }
 }

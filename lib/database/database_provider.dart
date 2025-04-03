@@ -5,7 +5,7 @@ import '../model/tarefa.dart';
 
 class DatabaseProvider {
 
-  static const _dbNome = 'cadastro_tarefas.db';
+  static const _dbNome = 'cadastro_event.db';
   static const _dbVersion = 1;
 
   DatabaseProvider._init();
@@ -34,10 +34,10 @@ class DatabaseProvider {
 
   Future<void> _onCreate(Database db, int version) async{
     await db.execute('''
-    CREATE TABLE ${Tarefa.nomeTabela}(
-    ${Tarefa.CAMPO_ID} INTEGER PRIMARY KEY AUTOINCREMENT,
-    ${Tarefa.CAMPO_DESCRICAO} TEXT NOT NULL,
-    ${Tarefa.CAMPO_PRAZO} TEXT
+    CREATE TABLE ${Event.nomeTabela}(
+    ${Event.CAMPO_ID} INTEGER PRIMARY KEY AUTOINCREMENT,
+    ${Event.CAMPO_DESCRICAO} TEXT NOT NULL,
+    ${Event.CAMPO_PRAZO} TEXT
     );
     ''');
   }
