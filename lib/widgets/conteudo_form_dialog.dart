@@ -20,6 +20,8 @@ class ConteudoFormDialogState extends State<ConteudoFormDialog>{
   final descricaoController = TextEditingController();
   final prazoControler = TextEditingController();
   final _dateFormat = DateFormat('dd/MM/yyyy');
+  final localizacaoController = TextEditingController();
+
 
   @override
   void initState(){
@@ -60,6 +62,18 @@ class ConteudoFormDialogState extends State<ConteudoFormDialog>{
               ),
               ),
               readOnly: true,
+            ),
+
+            TextFormField(
+              controller: localizacaoController,
+              decoration: InputDecoration(
+                labelText: 'Localização do Evento',
+                prefixIcon: Icon(Icons.location_on),
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () => localizacaoController.clear(),
+                ),
+              ),
             ),
           ],
         )
